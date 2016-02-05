@@ -5,7 +5,7 @@ Template.user_subscribed_posts.helpers({
       template: "posts_list_compact",
       options: {
         currentUser: user,
-        fieldLabel: i18n.t("subscribedAt"),
+        fieldLabel: i18n.t("subscribed_at"),
         fieldValue: function (post) {
           var user = this.currentUser;
           var item = _.findWhere(user.telescope.subscribedItems.Posts, {itemId: post._id});
