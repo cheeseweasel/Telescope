@@ -1,0 +1,15 @@
+<template name="category_subscribe">
+  {{#if canSubscribe}}
+    <div class="category-subscribe module grid-block">
+      {{#if subscribed}}
+        <a class="unsubscribe-link" href="#">
+          <span>{{_ 'unsubscribe_from_category'}}</span>
+        </a>
+      {{else}}
+        <a class="subscribe-link" href="#">
+          <span>{{_ 'subscribe_to_category'}}</span>
+        </a>
+      {{/if}}
+    </div>
+  {{/if}}
+</template>

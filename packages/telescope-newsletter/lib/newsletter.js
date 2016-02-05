@@ -94,6 +94,28 @@ Settings.addField([
     }
   },
   {
+    fieldName: 'enableSubscriptionToCategory',
+    fieldSchema: {
+      type: Boolean,
+      optional: true,
+      autoform: {
+        group: 'newsletter',
+        instructions: 'Enable newsletter subscriptions to individual categories (requires Mandrill account setup)'
+      }
+    }
+  },
+  {
+    fieldName: 'enableSubscriptionToAuthors',
+    fieldSchema: {
+      type: Boolean,
+      optional: true,
+      autoform: {
+        group: 'newsletter',
+        instructions: 'Enable newsletter subscriptions to authors (requires Mandrill account setup).'
+      }
+    }
+  },
+  {
     fieldName: "mailChimpAPIKey",
     fieldSchema: {
       type: String,
@@ -114,6 +136,32 @@ Settings.addField([
       autoform: {
         group: 'newsletter',
         instructions: 'The ID of the list you want to send to.',
+        class: "private-field"
+      }
+    }
+  },
+  {
+    fieldName: "mandrillAccountId",
+    fieldSchema: {
+      type: String,
+      optional: true,
+      private: true,
+      autoform: {
+        group: "newsletter",
+        instructions: 'The account name for the mandrill account',
+        class: "private-field"
+      }
+    }
+  },
+  {
+    fieldName: 'mandrillAPIKey',
+    fieldSchema: {
+      type: String,
+      optional: true,
+      private: true,
+      autoform: {
+        group: 'newsletter',
+        instructions: 'The API Key for the mandrill account (Settings > SMTP & API Credentials)',
         class: "private-field"
       }
     }

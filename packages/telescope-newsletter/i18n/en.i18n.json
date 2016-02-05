@@ -11,5 +11,9 @@
   "newsletterFrequency" : "Newsletter Frequency",
   "newsletterTime" : "Newsletter Time",
   "enableNewsletter" : "Enable Newsletter",
-  "autoSubscribe" : "Auto Subscribe"
+  "autoSubscribe" : "Auto Subscribe",
+  "enableSubscriptionToCategory" : "Enable Subscription to Category",
+  "enableSubscriptionToAuthors" : "Enable Subscription to Authors",
+  "mandrillAccountId" : "Mandrill Account Id",
+  "mandrillAPIKey" : "Mandrill API Key"
 }

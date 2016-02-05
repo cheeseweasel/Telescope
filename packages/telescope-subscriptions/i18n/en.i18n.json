@@ -1,0 +1,11 @@
+{
+  "subscribed_posts" : "Subscribed Posts",
+  "subscribe_to_thread" : "Subscribe to comment thread",
+  "unsubscribe_from_thread" : "Unsubscribe from comment thread",
+  "subscribed_categories" : "Subscribed Categories",
+  "subscribe_to_category" : "Subscribe to this category's newsletter",
+  "unsubscribe_from_category" : "Unsubscribe from category",
+  "subscribed_authors" : "Subscribed Authors",
+  "subscribe_to_author" : "Subscribe to authors posts",
+  "unsubscribe_from_author" : "Unsubscribe from authors posts"
+}
