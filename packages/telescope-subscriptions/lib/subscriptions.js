@@ -12,7 +12,7 @@ Users.addField({
 
 Telescope.modules.add("profileEdit", {
   template: 'user_subscribed_posts',
-  order: 5
+  order: 6
 });
 
 Telescope.modules.add("profileEdit", {
@@ -22,7 +22,7 @@ Telescope.modules.add("profileEdit", {
 
 Telescope.modules.add("profileEdit", {
   template: 'user_subscribed_authors',
-  order: 7
+  order: 6
 });
 
 Posts.views.add("userSubscribedPosts", function (terms) {
@@ -36,32 +36,6 @@ Posts.views.add("userSubscribedPosts", function (terms) {
   return {
     find: {_id: {$in: postsIds}},
     options: {limit: 5, sort: {postedAt: -1}}
-  };
-});
-
-Posts.views.add("userSubscribedCategories", function (terms) {
-  var user = Meteor.users.findOne(terms.userId),
-      categoryIds = [];
-
-  if (user && user.telescope.subscribedItems && user.telescope.subscribedItems.Categories) {
-    categoryIds = _.pluck(user.telescope.subscribedItems.Categories, "itemId");
-  }
-
-  return {
-    find: {_id: {$in: categoryIds}}
-  };
-});
-
-Posts.views.add("userSubscribedAuthors", function (terms) {
-  var user = Meteor.users.findOne(terms.userId),
-      authorIds = [];
-
-  if (user && user.telescope.subscribedItems && user.telescope.subscribedItems.Users) {
-    authorIds = _.pluck(user.telescope.subscribedItems.Users, "itemId");
-  }
-
-  return {
-    find: {_id: {$in: authorIds}}
   };
 });
 

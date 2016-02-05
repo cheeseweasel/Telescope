@@ -1,0 +1,19 @@
+<template name="user_subscribed_categories">
+  <div class="user-profile-subscribed grid grid-small grid-module ">
+    <h3>{{_ "subscribed_categories"}}</h3>
+    <table>
+      <thead>
+        <tr>
+          <td>Category</td>
+          <td>Subscribed At</td>
+        </tr>
+      </thead>
+      {{#each subscribedCategories}}
+        <tr>
+          <td><a href="{{categoryLink}}" class="category">{{categoryName}}</a></td>
+          <td>{{subscribedAt}}</td>
+        </tr>
+      {{/each}}
+    </table>
+  </div>
+</template>

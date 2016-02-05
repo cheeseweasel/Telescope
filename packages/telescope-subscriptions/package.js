@@ -41,7 +41,9 @@ Package.onUse(function (api) {
     'lib/client/templates/category_subscribe.html',
     'lib/client/templates/category_subscribe.js',
     'lib/client/templates/user_subscribed_posts.html',
-    'lib/client/templates/user_subscribed_posts.js'
+    'lib/client/templates/user_subscribed_posts.js',
+    'lib/client/templates/user_subscribed_categories.html',
+    'lib/client/templates/user_subscribed_categories.js'
   ], ['client']);
 
   // server
