@@ -263,7 +263,7 @@ Telescope.modules.add("contentTop", {
   only: ["postsDefault"]
 });
 
- function subscribeUserOnProfileCompletion (user) {
+function subscribeUserOnProfileCompletion (user) {
   if (!!Settings.get('autoSubscribe') && !!Users.getEmail(user)) {
     addToMailChimpList(user, false, function (error, result) {
       console.log(error);

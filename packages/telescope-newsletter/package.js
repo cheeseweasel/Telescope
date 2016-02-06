@@ -34,6 +34,7 @@ Package.onUse(function (api) {
     'lib/server/cron.js',
     'lib/server/mailchimp.js',
     'lib/server/routes.js',
+    'lib/server/individual-newsletters.js',
     'lib/server/templates/emailDigest.handlebars',
     'lib/server/templates/emailDigestConfirmation.handlebars',
     'lib/server/templates/emailPostItem.handlebars'

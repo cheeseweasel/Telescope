@@ -6,6 +6,15 @@ Picker.route('/email/campaign', function(params, req, res, next) {
   res.end(campaignSubject+campaignSchedule+campaign.html);
 });
 
+// Personalised email
+Picker.route('/email/my-newsletter', function(params, req, res, next) {
+  var users = scheduleIndividualNewsletters();
+  var campaign = buildIndividualNewsletter(users[0]);
+  var campaignSubject = '<div class="campaign-subject"><strong>Subject:</strong> '+campaign.subject+' (note: contents might change)</div>';
+  var campaignSchedule = '<div class="campaign-schedule"><strong>Scheduled for:</strong> '+ Meteor.call('getNextJob') +'</div>';
+  res.end(campaignSubject+campaignSchedule+campaign.html);
+});
+
 // Notification email
 Picker.route('/email/digest-confirmation', function(params, req, res, next) {
   var confirmationHtml = Telescope.email.getTemplate('emailDigestConfirmation')({

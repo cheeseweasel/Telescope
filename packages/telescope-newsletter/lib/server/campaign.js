@@ -1,7 +1,11 @@
 defaultFrequency = 7;
 defaultPosts = 5;
 
-getCampaignPosts = function (postsCount) {
+var avatarUrls = [];
+
+getCampaignPosts = function (postsCount, filter) {
+
+  filter = filter || {}
 
   // look for last scheduled campaign in the database
   var lastCampaign = SyncedCron._collection.findOne({name: 'scheduleNewsletter'}, {sort: {finishedAt: -1}, limit: 1});
@@ -15,10 +19,31 @@ getCampaignPosts = function (postsCount) {
     limit: postsCount,
     after: after
   });
+
+  for( var itm in filter ){
+    params.find[itm] = filter[itm];
+  }
   return Posts.find(params.find, params.options).fetch();
 };
 
+var verifyAvatarUrl = function(url){
+  var cached = _.findWhere(avatarUrls, {'url': url});
+
+  if( cached !== undefined ) { return cached.valid; }
+
+  var obj = {'url': url, 'valid': true};
+
+  try {
+    HTTP.get(url);
+  } catch (error) {
+    obj.valid = false;
+  }
+  avatarUrls.push(obj);
+  return obj.valid;
+};
+
 buildCampaign = function (postsArray) {
+
   var postsHTML = '', subject = '';
 
   // 1. Iterate through posts and pass each of them through a handlebars template
@@ -40,9 +65,7 @@ buildCampaign = function (postsArray) {
       authorAvatarUrl: Avatar.getUrl(postUser)
     });
 
-    try {
-      HTTP.get(post.authorAvatarUrl);
-    } catch (error) {
+    if(!verifyAvatarUrl(post.authorAvatarUrl)){
       post.authorAvatarUrl = false;
     }
 
@@ -50,7 +73,7 @@ buildCampaign = function (postsArray) {
       properties.body = Telescope.utils.trimHTML(post.htmlBody, 20);
     }
 
-    if (post.commentCount > 0)
+    if (post.commentCount > 0) {
       properties.popularComments = Comments.find({postId: post._id}, {sort: {score: -1}, limit: 2, transform: function (comment) {
         var user = Meteor.users.findOne(comment.userId);
 
@@ -58,13 +81,12 @@ buildCampaign = function (postsArray) {
         comment.authorProfileUrl = Users.getProfileUrl(user, true);
         comment.authorAvatarUrl = Avatar.getUrl(user);
 
-        try {
-          HTTP.get(comment.authorAvatarUrl);
-        } catch (error) {
+        if(!verifyAvatarUrl(comment.authorAvatarUrl)){
           comment.authorAvatarUrl = false;
         }
         return comment;
       }}).fetch();
+    }
 
     if(post.url) {
       properties.domain = Telescope.utils.getDomain(post.url);
@@ -100,7 +122,9 @@ scheduleNextCampaign = function (isTest) {
   isTest = !! isTest;
   var posts = getCampaignPosts(Settings.get('postsPerNewsletter', defaultPosts));
   if(!!posts.length){
-    return scheduleCampaign(buildCampaign(posts), isTest);
+    var campaign = scheduleCampaign(buildCampaign(posts), isTest);
+    scheduleIndividualNewsletters();
+    return campaign;
   }else{
     var result = 'No posts to schedule today…';
     return result;
