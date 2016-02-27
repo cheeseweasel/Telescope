@@ -31,6 +31,7 @@ Package.onUse(function (api) {
     'lib/posts.js',
     'lib/categories.js',
     'lib/authors.js',
+    'lib/routes.js',
   ], ['client', 'server']);
 
   // client
@@ -40,6 +41,8 @@ Package.onUse(function (api) {
     'lib/client/templates/post_subscribe.js',
     'lib/client/templates/category_subscribe.html',
     'lib/client/templates/category_subscribe.js',
+    'lib/client/templates/manage_subscriptions.html',
+    'lib/client/templates/manage_subscriptions.js',
     'lib/client/templates/user_subscribed_posts.html',
     'lib/client/templates/user_subscribed_posts.js',
     'lib/client/templates/user_subscribed_categories.html',
@@ -62,7 +65,8 @@ Package.onUse(function (api) {
 
   api.export([
     'subscribeItem',
-    'unsubscribeItem'
+    'unsubscribeItem',
+    'Subscriptions'
   ]);
 
 });

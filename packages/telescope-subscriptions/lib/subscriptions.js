@@ -1,3 +1,55 @@
+Subscriptions = new Mongo.Collection("subscriptions");
+
+Subscriptions.schema = new SimpleSchema({
+
+  _id: {
+    type: String,
+    optional: true
+  },
+  createdAt: {
+    type: Date,
+    optional: true
+  },
+  categories: {
+    type: String,
+    optional: true,
+    editableBy: ["admin", "member"],
+    autoform: {
+      noselect: true,
+      type: "bootstrap-category",
+      order: 50,
+      options: function () {
+        var categories = Categories.find().map(function (category) {
+          return {
+            value: category._id,
+            label: category.name
+          };
+        });
+        return categories;
+      }
+    }
+  },
+  subscribedEmail: {
+    type: String,
+    optional: false
+  },
+  userId: {
+    type: String,
+    optional: true
+  }
+});
+
+Meteor.startup(function(){
+  Subscriptions.internationalize();
+});
+
+Subscriptions.attachSchema(Subscriptions.schema);
+
+Subscriptions.allow({
+  insert: _.partial(Telescope.allowCheck, Subscriptions),
+  update: _.partial(Telescope.allowCheck, Subscriptions)
+});
+
 Users.addField({
   fieldName: 'telescope.subscribedItems',
   fieldSchema: {
