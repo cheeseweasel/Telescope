@@ -39,16 +39,29 @@ Subscriptions.schema = new SimpleSchema({
   }
 });
 
+Subscriptions.subscribe = function(email, userId) {
+  // Is there already a subscription for this email?
+  // TODO: Is the userid blank, but a user with that email exists?
+  // Create a subscription if not one already
+  // Return the subscription id
+  var subscription = Subscriptions.findOne({subscribedEmail: email});
+
+  if( !subscription ) {
+    var newData = {
+      subscribedEmail: email,
+      createdAt: new Date()
+    };
+    if( userId ) { newData['userId'] = userId; }
+    subscription = Subscriptions.insert(newData);
+  }
+  return subscription;
+}
+
 Meteor.startup(function(){
   Subscriptions.internationalize();
 });
 
 Subscriptions.attachSchema(Subscriptions.schema);
-
-Subscriptions.allow({
-  insert: _.partial(Telescope.allowCheck, Subscriptions),
-  update: _.partial(Telescope.allowCheck, Subscriptions)
-});
 
 Users.addField({
   fieldName: 'telescope.subscribedItems',

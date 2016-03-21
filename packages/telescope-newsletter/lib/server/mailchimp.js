@@ -128,6 +128,26 @@ addToMailChimpList = function(userOrEmail, confirm, done){
 };
 
 Meteor.methods({
+  subscribeToList: function(email) {
+    if(email === undefined && this.userId === undefined){
+      throw new Meteor.Error(500, "Newsletter subscription requires either a logged in user or an email address");
+    }
+    var emailAddress = email ? email : Users.getEmailById(this.userId);
+    var subscription;
+    if( Settings.get('enableSubscriptionToCategory', false ) ) { 
+      // Create subscription for email
+      // TODO: need to manage the segment for general newsletter
+      subscription = Subscriptions.subscribe(email, this.userId);
+    }
+
+    try {
+      var mc = addToMailChimpList(email, true);
+      console.log(mc);
+    } catch (error) {
+      throw new Meteor.Error(500, error.message);
+    }
+    return subscription;
+  },
   addCurrentUserToMailChimpList: function(){
     var currentUser = Meteor.users.findOne(this.userId);
     try {

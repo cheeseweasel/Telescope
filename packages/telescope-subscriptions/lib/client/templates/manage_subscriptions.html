@@ -1,0 +1,10 @@
+<template name="manage_subscriptions">
+  <div class="form-well manage-subscriptions">
+    <h3>Manage Category Subscriptions:</h3>
+    <p>Subscribed email: <strong>{{emailAddress}}</strong></p>
+
+    <div class="categories-list">
+      {{> quickForm collection="Subscriptions" id="manageSubscriptionsForm" template="bootstrap3-horizontal" input-col-class="controls" type="update" meteormethod="manageSubscriptions" fields=subscriptionFields}}
+    </div>
+  </div>
+</template>

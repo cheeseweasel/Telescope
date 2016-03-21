@@ -49,7 +49,7 @@ Meteor.startup(function () {
       var $banner = $('.newsletter-banner');
       if(Meteor.user()){
         $banner.addClass('show-loader');
-        Meteor.call('addCurrentUserToMailChimpList', function (error, result) {
+        Meteor.call('subscribeToList', function (error, result) {
           $banner.removeClass('show-loader');
           if(error){
             console.log(error);
@@ -57,6 +57,9 @@ Meteor.startup(function () {
           }else{
             console.log(result);
             confirmSubscription();
+            if( Settings.get('enableSubscriptionToCategory', false ) ) { 
+              FlowRouter.go('/manage-subscriptions/' + result._id);
+            }
           }
         });
       }else{
@@ -66,7 +69,7 @@ Meteor.startup(function () {
           return;
         }
         $banner.addClass('show-loader');
-        Meteor.call('addEmailToMailChimpList', email, function (error, result) {
+        Meteor.call('subscribeToList', email, function (error, result) {
           $banner.removeClass('show-loader');
           if(error){
             console.log(error);
@@ -75,6 +78,10 @@ Meteor.startup(function () {
             Messages.clearSeen();
             console.log(result);
             confirmSubscription();
+            
+            if( Settings.get('enableSubscriptionToCategory', false ) ) { 
+              FlowRouter.go('/manage-subscriptions/' + result._id);
+            }
           }
         });
       }
