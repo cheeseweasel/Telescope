@@ -37,6 +37,14 @@ Template.afCategory_bootstrap3.helpers({
     // Add bootstrap class
     atts = AutoForm.Utility.addClass(atts, "form-control");
     return atts;
+  },
+  menuType: function () {
+    if(this.atts && this.atts.menuType) {
+      return this.atts.menuType;
+    }
+    else {
+      return "collapsible";
+    }
   }
 });
 

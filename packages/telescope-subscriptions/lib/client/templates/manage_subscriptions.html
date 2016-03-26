@@ -4,7 +4,7 @@
     <p>Subscribed email: <strong>{{emailAddress}}</strong></p>
 
     <div class="categories-list">
-      {{> quickForm collection="Subscriptions" id="manageSubscriptionsForm" template="bootstrap3-horizontal" input-col-class="controls" type="update" meteormethod="manageSubscriptions" fields=subscriptionFields}}
+      {{> quickForm collection="Subscriptions" id="manageSubscriptionsForm" template="bootstrap3-horizontal" input-col-class="controls" type="update" doc=subscription fields=subscriptionFields}}
     </div>
   </div>
 </template>

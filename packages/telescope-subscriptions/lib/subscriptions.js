@@ -11,13 +11,14 @@ Subscriptions.schema = new SimpleSchema({
     optional: true
   },
   categories: {
-    type: String,
+    type: [String],
     optional: true,
-    editableBy: ["admin", "member"],
+    editableBy: ['all'],
     autoform: {
       noselect: true,
       type: "bootstrap-category",
       order: 50,
+      menuType: 'list',
       options: function () {
         var categories = Categories.find().map(function (category) {
           return {
@@ -62,6 +63,11 @@ Meteor.startup(function(){
 });
 
 Subscriptions.attachSchema(Subscriptions.schema);
+
+Subscriptions.allow({
+  insert: function(){return true;},
+  update: function(){return true;}
+});
 
 Users.addField({
   fieldName: 'telescope.subscribedItems',

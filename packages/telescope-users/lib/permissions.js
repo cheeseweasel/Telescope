@@ -114,8 +114,11 @@ Users.helpers({canEditById: function (document) {return Users.can.editById(this,
  */
 Users.can.submitField = function (user, field) {
 
-  if (!field.editableBy || !user) {
+  if (!field.editableBy || (!user && !_.contains(field.editableBy, "all"))) {
     return false;
+  }
+  if (_.contains(field.editableBy, "all")){
+    return true;
   }
 
   var adminCheck = _.contains(field.editableBy, "admin") && Users.is.admin(user); // is the field editable by admins?

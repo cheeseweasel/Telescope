@@ -1,3 +1,9 @@
+Template.manage_subscriptions.onCreated(function () {
+
+  var sub = Telescope.subsManager.subscribe('subscription', FlowRouter.getParam("subscriptionId"));
+  
+});
+
 Template.manage_subscriptions.helpers({
   emailAddress: function() {
     return subscription().subscribedEmail;
@@ -11,7 +17,5 @@ Template.manage_subscriptions.helpers({
 });
 
 var subscription = function() {
-  console.log(FlowRouter.getParam("subscriptionId"));
-  console.log(Subscriptions.findOne(FlowRouter.getParam("subscriptionId")));
   return Subscriptions.findOne({_id: FlowRouter.getParam("subscriptionId")});
 }
