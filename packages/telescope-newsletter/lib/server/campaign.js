@@ -23,6 +23,7 @@ getCampaignPosts = function (postsCount, filter) {
   for( var itm in filter ){
     params.find[itm] = filter[itm];
   }
+  console.log(params);
   return Posts.find(params.find, params.options).fetch();
 };
 
@@ -122,13 +123,48 @@ scheduleNextCampaign = function (isTest) {
   isTest = !! isTest;
   var posts = getCampaignPosts(Settings.get('postsPerNewsletter', defaultPosts));
   if(!!posts.length){
-    var campaign = scheduleCampaign(buildCampaign(posts), isTest);
-    scheduleIndividualNewsletters();
-    return campaign;
+    var seg = syncNewsletterSegment();
+    //var campaign = scheduleCampaign(buildCampaign(posts), isTest);
+    var newsletter = scheduleIndividualNewsletters();
+    return newsletter;
   }else{
     var result = 'No posts to schedule today…';
     return result;
   }
+};
+
+syncNewsletterSegment = function() {
+  // We need to handle this here in case the site owner has enabled category newsletters
+  // after the site has been running for some time (and so has a list already)
+  var subs = Subscriptions.find({ 
+    $or: [
+      { categories: { $exists: false } },
+      { categories: [] }
+    ],
+    inNewsletterSegment: false
+  }).fetch(); 
+
+  if( subs.length > 0 ) {
+    var segment = findOrCreateMailChimpSegment('Newsletter');
+    subs.forEach(function(sub) {
+      console.log('adding to segment: ' + sub.subscribedEmail);
+      addToMailChimpSegment(sub, segment, 'segment');
+    });
+  }
+  // and remove users who shouldn't be there, just to be sure
+  var subs = Subscriptions.find({ 
+    categories: { $exists: true, $ne: [] },
+    inNewsletterSegment: true
+  }).fetch(); 
+
+  if( subs.length > 0 ) {
+    var segment = findOrCreateMailChimpSegment('Newsletter');
+    subs.forEach(function(sub) {
+      console.log('removing from segment: ' + sub.subscribedEmail);
+      removeFromMailChimpSegment(sub, segment, 'segment');
+    });
+  }
+  console.log(Subscriptions.find().fetch());
 };
 
 Meteor.methods({

@@ -7,47 +7,51 @@ var defaultBatchInterval = 10000;
 scheduleIndividualNewsletters = function() {
   if( !Settings.get('enableSubscriptionToCategory', false ) ) { return false; }
 
-  var users = loadUsersForNewsletter();
+  var subs = loadSubscriptionsForNewsletter();
 
-  scheduleBatch(users);
+  var newsletter = scheduleBatch(subs);
 
-  return users;
+  return newsletter;
 };
 
-var loadUsersForNewsletter = function() {
-  users = Users.find( { 'telescope.subscribedItems.Categories': { $exists: true, $ne: [] } } );
-  return users.fetch();
+var loadSubscriptionsForNewsletter = function() {
+  subs = Subscriptions.find( { categories: { $exists: true, $ne: [] } } );
+  return subs.fetch();
 };
 
-var scheduleBatch = function(users) {
+var scheduleBatch = function(subs) {
 
-  var current = _.first(users, defaultBatchSize);
+  var current = _.first(subs, defaultBatchSize);
 
-  sendBatch(current);
+  var newsletter = sendBatch(current);
 
-  if(current.length < users.length) {
+  if(current.length < subs.length) {
 
-    var remainder = _.last(users, users.length - current.length);
+    var remainder = _.last(subs, subs.length - current.length);
 
     Meteor.setTimeout( function() {
       scheduleBatch( remainder );
     }, defaultBatchInterval );
   }
+  return newsletter;
 };
 
-var sendBatch = function(users) {
+var sendBatch = function(subs) {
 
-  users.forEach(function(user) {
-    var newsletter = buildIndividualNewsletter(user);
-    console.log('sending newsletter: ' + user);
+  var newsletter;
+  subs.forEach(function(sub) {
+    newsletter = buildIndividualNewsletter(sub);
+    console.log('sending newsletter: ' + sub.subscribedEmail);
     // And actually send the email now!
   });
+  return newsletter;
 };
 
-buildIndividualNewsletter = function(user) {
-  var categoryIds = _.pluck(user.telescope.subscribedItems.Categories, 'itemId');
+buildIndividualNewsletter = function(sub) {
+  var categoryIds = sub.categories;
   var query = { categories: { $in: categoryIds } };
   var posts = getCampaignPosts(Settings.get('postsPerNewsletter', 5), query);
+  console.log(posts);
   var campaign = buildCampaign(posts);
   return campaign;
 };

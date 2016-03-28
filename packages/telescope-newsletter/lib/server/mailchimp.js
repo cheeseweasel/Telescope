@@ -1,5 +1,6 @@
 var htmlToText = Npm.require('html-to-text');
 
+
 scheduleCampaign = function (campaign, isTest) {
   var isTest = typeof isTest === 'undefined' ? false : isTest;
 
@@ -127,6 +128,74 @@ addToMailChimpList = function(userOrEmail, confirm, done){
   }
 };
 
+addToMailChimpSegment = function(subscription, segment, segmentType = 'name') {
+  
+  var listId = Settings.get('mailChimpListId');
+
+  var segmentId = ( segmentType === 'name' ) ? findOrCreateMailChimpSegment(segment) : segment.id;
+  var data = {
+    id: listId,
+    seg_id: segmentId,
+    batch: [ {email: subscription.subscribedEmail} ]
+  }
+  return callMailChimpMethod('lists', 'static-segment-members-add', data, function(result){
+    Subscriptions.update(subscription, { $set: { inNewsletterSegment: true } });
+  });
+};
+
+removeFromMailChimpSegment = function(subscription, segment, segmentType = 'name') {
+  
+  var listId = Settings.get('mailChimpListId');
+
+  var segmentId = ( segmentType === 'name' ) ? findOrCreateMailChimpSegment(segment) : segment.id;
+  var data = {
+    id: listId,
+    seg_id: segmentId,
+    batch: [ {email: subscription.subscribedEmail} ]
+  }
+  return callMailChimpMethod('lists', 'static-segment-members-del', data, function(result){
+    Subscriptions.update(subscription, { $set: { inNewsletterSegment: false } });
+  });
+};
+
+findOrCreateMailChimpSegment = function(segmentName) {
+
+  var listId = Settings.get('mailChimpListId');
+
+  var data = { id: listId };
+
+  var segments = callMailChimpMethod('lists', 'static-segments', data);
+
+  var segment = _.findWhere(segments, { name: segmentName } );
+      
+  if(segment === undefined){
+    data.name = segmentName;
+    segment = callMailChimpMethod('lists', 'static-segment-add', data);
+  }
+  return segment;
+};
+
+callMailChimpMethod = function(section, method, data, callback) {
+  
+  var apiKey = Settings.get('mailChimpAPIKey');
+  var listId = Settings.get('mailChimpListId');
+
+  if(!!apiKey && !!listId){
+
+    try {
+      var api = new MailChimp(apiKey);
+      var result = api.call(section, method, data);
+      if(typeof callback === 'function') {
+        callback.call(api, result);
+      }
+      return result;
+    } catch (error) {
+      throw new Meteor.Error("subscription-failed", error.message);
+    }
+  }
+};
+
+
 Meteor.methods({
   subscribeToList: function(email) {
     if(email === undefined && this.userId === undefined){
@@ -137,6 +206,7 @@ Meteor.methods({
     if( Settings.get('enableSubscriptionToCategory', false ) ) { 
       // Create subscription for email
       // TODO: need to manage the segment for general newsletter
+      // segments get added here, but mainly handled in the send emails bit
       subscription = Subscriptions.subscribe(email, this.userId);
     }
 

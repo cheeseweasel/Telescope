@@ -6,6 +6,14 @@ Picker.route('/email/campaign', function(params, req, res, next) {
   res.end(campaignSubject+campaignSchedule+campaign.html);
 });
 
+// Campaign
+Picker.route('/email/test-campaign', function(params, req, res, next) {
+  var campaign = scheduleNextCampaign(true);
+  var campaignSubject = '<div class="campaign-subject"><strong>Subject:</strong> '+campaign.subject+' (note: contents might change)</div>';
+  var campaignSchedule = '<div class="campaign-schedule"><strong>Scheduled for:</strong> '+ Meteor.call('getNextJob') +'</div>';
+  res.end(campaignSubject+campaignSchedule+campaign.html);
+});
+
 // Personalised email
 Picker.route('/email/my-newsletter', function(params, req, res, next) {
   var users = scheduleIndividualNewsletters();

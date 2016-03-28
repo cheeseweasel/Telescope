@@ -34,6 +34,15 @@ Subscriptions.schema = new SimpleSchema({
     type: String,
     optional: false
   },
+  inNewsletterSegment: {
+    type: Boolean,
+    optional: false,
+    defaultValue: false
+  },
+  //mailChimpSegmentId: {
+    //type: String,
+    //optional: true,
+  //},
   userId: {
     type: String,
     optional: true
