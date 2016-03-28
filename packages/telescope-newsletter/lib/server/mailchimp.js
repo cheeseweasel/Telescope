@@ -209,6 +209,13 @@ Meteor.methods({
       // segments get added here, but mainly handled in the send emails bit
       subscription = Subscriptions.subscribe(email, this.userId);
     }
+    // If this is an email for someone who has an account but no user id on the subscription,
+    // then set the user id (this could happen if a user is not signed in, but subscribes to
+    // the newsletter).
+    var user = Users.findOne({ 'emails.address': email });
+    if( !subscription.userId && user ){
+      Subscriptions.update(subscription, { $set: { userId: user._id } });
+    }
 
     try {
       var mc = addToMailChimpList(email, true);

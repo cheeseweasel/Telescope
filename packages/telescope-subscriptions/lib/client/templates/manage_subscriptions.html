@@ -1,10 +1,23 @@
 <template name="manage_subscriptions">
   <div class="form-well manage-subscriptions">
-    <h3>Manage Category Subscriptions:</h3>
-    <p>Subscribed email: <strong>{{emailAddress}}</strong></p>
+    {{#if inProgress}}
+      <div>Loading...</div>
+    {{else}}
+      {{#if canUpdate}}
+        <h3>Manage Category Subscriptions:</h3>
+        <p>Subscribed email: <strong>{{subscription.subscribedEmail}}</strong></p>
 
-    <div class="categories-list">
-      {{> quickForm collection="Subscriptions" id="manageSubscriptionsForm" template="bootstrap3-horizontal" input-col-class="controls" type="update" doc=subscription fields=subscriptionFields}}
-    </div>
+        <div class="categories-list">
+          {{> quickForm collection="Subscriptions" id="manageSubscriptionsForm" template="bootstrap3-horizontal" input-col-class="controls" type="update" doc=subscription fields=subscriptionFields}}
+        </div>
+      {{else}}
+        {{#if loggedIn}}
+          <p>The requested subscription is linked to a different account</p>
+        {{else}}
+          <p>You need to log in to manage the requested subscription</p>
+          <p>Please <a href="/login">log in</a> to proceed</p>
+        {{/if}}
+      {{/if}}
+    {{/if}}
   </div>
 </template>
